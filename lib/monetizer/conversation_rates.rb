@@ -2,17 +2,23 @@
 
 module Monetizer
   module ConversationRates
-    def currencies
-      @@currencies ||= {}
-    end
+    attr_accessor :currencies
 
     def conversion_rates(currency, rates)
-      currencies
-      @@currencies[currency] = {} if currencies[currency].nil?
-      @@currencies[currency] = @@currencies[currency].merge(rates)
-      @@currencies[currency].each do |temp_currency, temp_value|
-        @@currencies[temp_currency] = {} if @@currencies[temp_currency].nil?
-        @@currencies[temp_currency][currency] = 1 / BigDecimal(temp_value, 8)
+      self.currencies ||= {}
+      self.currencies[currency] = {} if self.currencies[currency].nil?
+      self.currencies[currency] = self.currencies[currency].merge(rates)
+      calculate_reverse_rates(currency)
+    end
+
+    private
+
+    def calculate_reverse_rates(currency)
+      self.currencies[currency].each do |temp_currency, temp_value|
+        if self.currencies[temp_currency].nil?
+          self.currencies[temp_currency] = {}
+        end
+        self.currencies[temp_currency][currency] = 1 / BigDecimal(temp_value, 8)
       end
     end
   end

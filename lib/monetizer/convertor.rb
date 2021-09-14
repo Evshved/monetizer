@@ -10,7 +10,7 @@ module Monetizer
 
         convert_ratio = currencies[currency][new_currency]
       end
-      converted_amount = (big_decimal(@amount) * big_decimal(convert_ratio)).truncate(2)
+      converted_amount = (big_decimal(@amount) * big_decimal(convert_ratio))
       Money.new(converted_amount, new_currency)
     end
   end
