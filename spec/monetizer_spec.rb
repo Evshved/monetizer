@@ -6,19 +6,20 @@ RSpec.describe Monetizer::Money do
   end
 
   let(:foo) { 'bar' }
-  let(:execute_rates) { described_class.conversion_rates('EUR', {
-    'USD'     => 1.11,
-    'Bitcoin' => 0.0047
-  })}
+  let(:execute_rates) do
+    described_class.conversion_rates('EUR',
+                                     'USD' => 1.11,
+                                     'Bitcoin' => 0.0047)
+  end
 
   describe '#conversion_rates' do
-    let(:valid_hash_rates) { {"USD"=>1.11, "Bitcoin"=>0.0047} }
+    let(:valid_hash_rates) { { 'USD' => 1.11, 'Bitcoin' => 0.0047 } }
 
     it 'return valid hash with rates' do
       expect(execute_rates).to eq(valid_hash_rates)
     end
 
-    let(:valid_array_keys) { ["EUR", "USD", "Bitcoin"] }
+    let(:valid_array_keys) { %w[EUR USD Bitcoin] }
 
     it 'return all currencies rates with reverse combinations' do
       execute_rates
@@ -28,14 +29,13 @@ RSpec.describe Monetizer::Money do
 
   context 'when conversion_rates have been set' do
     before(:each) do
-      described_class.conversion_rates('EUR', {
-        'USD'     => 1.11,
-        'BTC' => 0.0047
-      })
+      described_class.conversion_rates('EUR',
+                                       'USD' => 1.11,
+                                       'BTC' => 0.0047)
     end
-    
+
     let(:money) { described_class.new(20, 'EUR') }
-    let(:amount) { "20.00" }
+    let(:amount) { '20.00' }
     let(:currency) { 'EUR' }
 
     describe '#amount' do
@@ -114,7 +114,8 @@ RSpec.describe Monetizer::Money do
 
     describe 'multiple counting' do
       it 'return correct result using the single currency' do
-        calculation_res = (money / described_class.new(42, 'EUR') + described_class.new(42, 'BTC')).inspect
+        calculation_res = (money / described_class.new(42, 'EUR')
+                           + described_class.new(42, 'BTC')).inspect
         expect(calculation_res).to eq('8936.65 EUR')
       end
     end
